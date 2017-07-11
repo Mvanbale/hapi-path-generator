@@ -19,6 +19,8 @@ function deepMerge(v1, v2) {
 
 const hapiRouteGenerator = {
   register: function(server, options, done) {
+    console.log(server);
+    console.log(options);
     let sequelize = options.sequelize;
 
     // Set the default relation limit to three if it is 0 ignore it.
