@@ -91,6 +91,6 @@ const hapiRouteGenerator = {
     }
 };
 hapiRouteGenerator.register['attributes'] = {
-    pkg: require('../package.json')
+    pkg: require('./package.json')
 };
 module.exports = hapiRouteGenerator;
