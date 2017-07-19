@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "boom": "^3.2.2",
+    "joi": "^10.6.0",
     "ramda": "^0.21.0",
     "validator": "^5.4.0"
   }

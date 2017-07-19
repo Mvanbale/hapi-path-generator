@@ -1,6 +1,7 @@
 "use strict";
 const R = require('ramda');
 const boom_1 = require('boom');
+const Joi = require('joi');
 const sequelizePaths_1 = require('./sequelize/sequelizePaths');
 function deepMerge(v1, v2) {
     if (Array.isArray(v1) && Array.isArray(v2)) {
@@ -16,12 +17,23 @@ function deepMerge(v1, v2) {
 const makeValidator = (route, options) => {
     switch (route.method) {
         case 'post':
-        case 'patch':
+        case 'put':
             return { payload: options.validators[R.last(route.history).model] };
         default:
             break;
     }
 };
+
+const makeResponseType = (route, options) => {
+
+    switch (route.method) {
+        case 'get':
+            return Joi.array().items(options.validators[R.last(route.history).model]);
+        default:
+            break;
+    }
+}
+
 const hapiRouteGenerator = {
     register: function (server, options, done) {
         let sequelize = options.sequelize;
@@ -54,6 +66,10 @@ const hapiRouteGenerator = {
                     method: route.method,
                     config: R.mergeWith(deepMerge, options.config, {
                         validate: makeValidator(route, options),
+                        response: {
+                            sample: 0,
+                            schema: makeResponseType(route, options)
+                        },
                         handler: function (req, rep) {
                             req.app.route = route;
                             let context = {
