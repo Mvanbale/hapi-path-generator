@@ -67,13 +67,18 @@ const hapiRouteGenerator = {
                                 rep(response);
                             })
                                 .catch((err) => {
-                                if (err.name && err.name === 'SequelizeValidationError') {
-                                    rep(boom_1.badRequest(err.errors[0].message));
-                                }
-                                else {
-                                    rep(boom_1.wrap(err));
-                                }
-                            });
+                                    if (err.name && (
+                                        err.name === 'SequelizeValidationError' ||
+                                        err.name === 'SequelizeUniqueConstraintError')
+                                    ) {
+                                        rep(boom_1.badRequest(err.errors[0].message));
+                                    } else if (err.name && err.name === 'SequelizeForeignKeyConstraintError') {
+                                        rep(boom_1.badRequest(err.original.detail));
+                                    }
+                                    else {
+                                        rep(boom_1.wrap(err));
+                                    }
+                                });
                         },
                         id: routeId
                     })
